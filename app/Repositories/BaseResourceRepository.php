@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\BaseAuthenticatableModel;
 use App\Models\BaseModel;
 use App\Repositories\Interfaces\BaseResourceRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -15,7 +16,7 @@ class BaseResourceRepository implements BaseResourceRepositoryInterface
      *
      * @var \App\Models\BaseModel
      */
-    protected BaseModel $model;
+    protected BaseModel|BaseAuthenticatableModel $model;
 
     /**
      * Get all resources.
