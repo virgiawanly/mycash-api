@@ -7,6 +7,8 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\UnauthorizedException;
+use Illuminate\Validation\ValidationException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,17 +26,15 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Exception $e, Request $request) {
             if ($request->is('api/*')) {
-                return ResponseHelper::internalServerError($e->getMessage(), $e);
+                if ($e instanceof ValidationException) {
+                    // Send default response
+                } else if ($e instanceof UnauthorizedException) {
+                    return ResponseHelper::unauthorized($e->getMessage());
+                } else if ($e instanceof ModelNotFoundException) {
+                    return ResponseHelper::notFound($e->getMessage());
+                } else {
+                    return ResponseHelper::internalServerError($e->getMessage());
+                }
             }
-
-            return parent::render($request, $e);
-        });
-
-        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
-            if ($request->is('api/*')) {
-                return ResponseHelper::notFound($e->getMessage());
-            }
-
-            return parent::render($request, $e);
         });
     })->create();

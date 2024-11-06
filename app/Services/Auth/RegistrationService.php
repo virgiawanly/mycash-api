@@ -10,6 +10,8 @@ class RegistrationService
     /**
      * Create a new service instance.
      *
+     * @param \App\Repositories\Interfaces\BusinessRepositoryInterface $businessRepository
+     * @param \App\Repositories\Interfaces\UserRepositoryInterface $userRepository
      * @return void
      */
     public function __construct(
@@ -20,8 +22,8 @@ class RegistrationService
     /**
      * Register a new user and its business.
      *
-     * @param array $data
-     * @return \App\Models\User
+     * @param  array $data
+     * @return array
      */
     public function register(array $data)
     {
@@ -42,6 +44,9 @@ class RegistrationService
         // Update user's business
         $user->update(['business_id' => $business->id]);
 
-        return $user;
+        return [
+            'user' => $user,
+            'token' => $user->createToken('webAppToken')->plainTextToken
+        ];
     }
 }

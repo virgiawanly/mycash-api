@@ -30,16 +30,10 @@ class RegistrationController extends Controller
             DB::beginTransaction();
 
             // Register the user and its business
-            $user = $this->registrationService->register($request->validated());
-
-            // Create a token for the user to login
-            $token = $user->createToken('webAppToken')->plainTextToken;
+            $results = $this->registrationService->register($request->validated());
 
             DB::commit();
-            return ResponseHelper::success(trans('messages.successfully_registered'), [
-                'user' => $user,
-                'token' => $token
-            ], 201);
+            return ResponseHelper::success(trans('messages.successfully_registered'), $results, 201);
         } catch (Exception $e) {
             DB::rollBack();
             throw $e;
