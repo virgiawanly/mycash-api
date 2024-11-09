@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use App\Traits\ScopedByBusiness;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contact extends BaseModel
 {
-    use SoftDeletes;
+    use SoftDeletes, ScopedByBusiness;
 
     /**
      * The table associated with the model.
@@ -51,9 +53,9 @@ class Contact extends BaseModel
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function group()
+    public function contactGroup(): BelongsTo
     {
-        return $this->belongsTo(ContactGroup::class, 'contact_group_id');
+        return $this->belongsTo(ContactGroup::class);
     }
 
     /**
@@ -62,7 +64,7 @@ class Contact extends BaseModel
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOnlyVendors(Builder $query)
+    public function scopeOnlyVendors(Builder $query): Builder
     {
         return $query->where('is_vendor', true);
     }
@@ -73,7 +75,7 @@ class Contact extends BaseModel
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOnlyCustomers(Builder $query)
+    public function scopeOnlyCustomers(Builder $query): Builder
     {
         return $query->where('is_customer', true);
     }

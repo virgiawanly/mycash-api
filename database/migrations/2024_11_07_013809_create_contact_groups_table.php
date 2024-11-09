@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('contact_groups', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('business_id')->nullable()->index('cg_bi');
+            $table->foreignId('business_entity_id')->nullable()->index('cg_bei');
+            $table->string('name')->nullable()->index('cg_n');
             $table->timestamps();
             $table->softDeletes();
         });

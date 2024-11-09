@@ -68,12 +68,13 @@ class BaseResourceService
     /**
      * Get a resource by id.
      *
-     * @param int $id
+     * @param  int $id
+     * @param  array $relations
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function find(int $id): Model
+    public function find(int $id, array $relations = []): Model
     {
-        return $this->repository->find($id);
+        return $this->repository->find($id, $relations);
     }
 
     /**

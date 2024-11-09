@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use App\Traits\DefaultActivityLogOptions;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class BaseModel extends Model
@@ -110,5 +111,16 @@ class BaseModel extends Model
                 }
             }
         });
+    }
+
+    /**
+     * Scope a query to only include data from the user's business.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFromUserBusiness(Builder $query): Builder
+    {
+        return $query->where($this->businessIdColumnName ?? 'business_id', Auth::user()->business_id);
     }
 }
