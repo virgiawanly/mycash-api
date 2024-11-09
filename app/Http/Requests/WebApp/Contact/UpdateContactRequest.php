@@ -49,4 +49,17 @@ class UpdateContactRequest extends FormRequest
             'accounts_receivable_id' => ['nullable'],
         ];
     }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'business_entity_id' => trans('validation.attributes.business_entity'),
+            'contact_group_id' => trans('validation.attributes.contact_group'),
+        ];
+    }
 }

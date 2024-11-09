@@ -58,8 +58,8 @@ class CreateContactRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'business_entity_id' => 'business entity',
-            'contact_group_id' => 'contact group',
+            'business_entity_id' => trans('validation.attributes.business_entity'),
+            'contact_group_id' => trans('validation.attributes.contact_group'),
         ];
     }
 }

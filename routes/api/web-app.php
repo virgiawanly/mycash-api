@@ -3,6 +3,7 @@
 use App\Http\Controllers\WebApp\Auth\LoginController;
 use App\Http\Controllers\WebApp\Auth\RegistrationController;
 use App\Http\Controllers\WebApp\Contact\ContactController;
+use App\Http\Controllers\WebApp\Contact\ContactGroupController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -11,5 +12,6 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('contact-groups', ContactGroupController::class);
     Route::apiResource('contacts', ContactController::class);
 });
