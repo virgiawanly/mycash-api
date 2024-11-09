@@ -17,10 +17,12 @@ class User extends BaseAuthenticatableModel
      * @var array<int, string>
      */
     protected $fillable = [
+        'business_id',
         'name',
         'email',
         'phone',
         'password',
+        'remember_token',
     ];
 
     /**

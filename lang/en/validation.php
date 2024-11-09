@@ -189,6 +189,10 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'name',
+        'business_entity' => 'business entity',
+        'contact_group' => 'contact group',
+    ],
 
 ];

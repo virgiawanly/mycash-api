@@ -2,8 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\BaseAuthenticatableModel;
-use App\Models\BaseModel;
 use App\Repositories\Interfaces\BaseResourceRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -14,9 +12,9 @@ class BaseResourceRepository implements BaseResourceRepositoryInterface
     /**
      * The model instance.
      *
-     * @var \App\Models\BaseModel
+     * @var \Illuminate\Database\Eloquent\Model
      */
-    protected BaseModel|BaseAuthenticatableModel $model;
+    protected Model $model;
 
     /**
      * Get all resources.
@@ -65,22 +63,12 @@ class BaseResourceRepository implements BaseResourceRepositoryInterface
      * Get a resource by id.
      *
      * @param  int $id
+     * @param  array $relations
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function find(int $id): Model
+    public function find(int $id, array $relations = []): Model
     {
-        return $this->model->findOrFail($id);
-    }
-
-    /**
-     * Get a resource by id with trashed.
-     *
-     * @param  int $id
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public function findWithTrashed(int $id): Model
-    {
-        return $this->model->withTrashed()->findOrFail($id);
+        return $this->model->with($relations)->findOrFail($id);
     }
 
     /**
