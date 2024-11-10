@@ -7,7 +7,6 @@ use App\Http\Controllers\BaseResourceController;
 use App\Http\Requests\WebApp\Contact\CreateContactRequest;
 use App\Http\Requests\WebApp\Contact\UpdateContactRequest;
 use App\Services\Contact\ContactService;
-use Exception;
 use Illuminate\Support\Facades\DB;
 
 class ContactController extends BaseResourceController
@@ -30,17 +29,11 @@ class ContactController extends BaseResourceController
      */
     public function store(CreateContactRequest $request)
     {
-        try {
-            DB::beginTransaction();
+        $result = DB::transaction(function () use ($request) {
+            return $this->contactService->save($request->validated());
+        });
 
-            $result = $this->contactService->save($request->validated());
-
-            DB::commit();
-            return ResponseHelper::success(trans('messages.successfully_created'), $result, 201);
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        return ResponseHelper::success(trans('messages.successfully_created'), $result, 201);
     }
 
     /**
@@ -65,16 +58,10 @@ class ContactController extends BaseResourceController
      */
     public function update(UpdateContactRequest $request, int $id)
     {
-        try {
-            DB::beginTransaction();
+        $result = DB::transaction(function () use ($request, $id) {
+            return $this->contactService->patch($id, $request->validated());
+        });
 
-            $result = $this->contactService->patch($id, $request->validated());
-
-            DB::commit();
-            return ResponseHelper::success(trans('messages.successfully_updated'), $result, 200);
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        return ResponseHelper::success(trans('messages.successfully_updated'), $result, 200);
     }
 }
