@@ -16,7 +16,7 @@ class UniqueInUserBusiness implements ValidationRule
      * @param  string|null  $attribute
      * @return void
      */
-    public function __construct(protected Model $model, protected string|null $attribute = null, protected string|null $businessIdColumnName = 'business_id') {}
+    public function __construct(protected Model $model, protected string|null $attribute = null, protected string|null $exceptColumn = null, protected mixed $exceptValue = null, protected string|null $businessIdColumnName = 'business_id') {}
 
     /**
      * Run the validation rule.
@@ -31,7 +31,9 @@ class UniqueInUserBusiness implements ValidationRule
             $dataExists = $this->model
                 ->where($this->businessIdColumnName, $user->business_id)
                 ->where($this->attribute ? $this->attribute : $attribute, $value)
-                ->exists();
+                ->when($this->exceptColumn && $this->exceptValue, function ($query) {
+                    return $query->where($this->exceptColumn, '!=', $this->exceptValue);
+                })->exists();
 
             if ($dataExists) {
                 $fail('The :attribute already exists.');
