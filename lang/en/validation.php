@@ -193,6 +193,7 @@ return [
         'name' => 'name',
         'business_entity' => 'business entity',
         'contact_group' => 'contact group',
+        'pic' => 'pic',
     ],
 
 ];

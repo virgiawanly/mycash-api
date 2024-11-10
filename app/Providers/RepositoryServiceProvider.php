@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Repositories\BusinessEntityRepository;
+use App\Repositories\BusinessLocationRepository;
 use App\Repositories\BusinessRepository;
 use App\Repositories\ContactGroupRepository;
 use App\Repositories\ContactRepository;
 use App\Repositories\Interfaces\BusinessEntityRepositoryInterface;
+use App\Repositories\Interfaces\BusinessLocationRepositoryInterface;
 use App\Repositories\Interfaces\BusinessRepositoryInterface;
 use App\Repositories\Interfaces\ContactGroupRepositoryInterface;
 use App\Repositories\Interfaces\ContactRepositoryInterface;
@@ -15,6 +17,7 @@ use App\Repositories\UserRepository;
 use App\Services\Auth\LoginService;
 use App\Services\Auth\RegistrationService;
 use App\Services\Business\BusinessEntityService;
+use App\Services\Business\BusinessLocationService;
 use App\Services\Contact\ContactGroupService;
 use App\Services\Contact\ContactService;
 use Illuminate\Support\ServiceProvider;
@@ -43,6 +46,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(BusinessEntityRepositoryInterface::class, BusinessEntityRepository::class);
         $this->app->bind(BusinessEntityService::class, function ($app) {
             return new BusinessEntityService($app->make(BusinessEntityRepositoryInterface::class));
+        });
+
+        $this->app->bind(BusinessLocationRepositoryInterface::class, BusinessLocationRepository::class);
+        $this->app->bind(BusinessLocationService::class, function ($app) {
+            return new BusinessLocationService($app->make(BusinessLocationRepositoryInterface::class));
         });
 
         $this->app->bind(ContactGroupRepositoryInterface::class, ContactGroupRepository::class);
