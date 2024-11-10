@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\ResponseHelper;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -28,7 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*')) {
                 if ($e instanceof ValidationException) {
                     // Send default response
-                } else if ($e instanceof UnauthorizedException) {
+                } else if ($e instanceof UnauthorizedException || $e instanceof AuthenticationException) {
                     return ResponseHelper::unauthorized($e->getMessage());
                 } else if ($e instanceof ModelNotFoundException) {
                     return ResponseHelper::notFound($e->getMessage());
