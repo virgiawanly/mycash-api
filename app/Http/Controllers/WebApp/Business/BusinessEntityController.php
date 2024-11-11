@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\WebApp\Business;
 
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\BaseResourceController;
+use App\Http\Requests\WebApp\Business\BatchDeleteBusinessEntityRequest;
 use App\Http\Requests\WebApp\Business\CreateBusinessEntityRequest;
 use App\Http\Requests\WebApp\Business\UpdateBusinessEntityRequest;
 use App\Services\Business\BusinessEntityService;
@@ -40,5 +42,18 @@ class BusinessEntityController extends BaseResourceController
     public function update(UpdateBusinessEntityRequest $request, int $id)
     {
         return parent::patch($request, $id);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\WebApp\Business\BatchDeleteBusinessEntityRequest  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function batchDelete(BatchDeleteBusinessEntityRequest $request)
+    {
+        $this->businessEntityService->batchDelete($request->validated());
+
+        return ResponseHelper::success(trans('messages.successfully_deleted'));
     }
 }
