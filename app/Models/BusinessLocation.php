@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Traits\ScopedByBusiness;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class BusinessEntity extends BaseModel
+class BusinessLocation extends BaseModel
 {
     use SoftDeletes, ScopedByBusiness;
 
@@ -14,7 +14,7 @@ class BusinessEntity extends BaseModel
      *
      * @var string
      */
-    protected $table = 'business_entities';
+    protected $table = 'business_locations';
 
     /**
      * The attributes that are mass assignable.
@@ -23,8 +23,20 @@ class BusinessEntity extends BaseModel
      */
     protected $fillable = [
         'business_id',
+        'business_entity_id',
         'name',
-        'code'
+        'code',
+        'email',
+        'phone',
+        'address',
+        'city',
+        'state',
+        'country',
+        'zipcode',
+        'pic_id',
+        'pic_name',
+        'pic_email',
+        'pic_phone',
     ];
 
     /**
@@ -35,6 +47,11 @@ class BusinessEntity extends BaseModel
     protected $searchables = [
         'name',
         'code',
+        'address',
+        'city',
+        'state',
+        'country',
+        'zipcode',
     ];
 
     /**
@@ -43,7 +60,13 @@ class BusinessEntity extends BaseModel
      * @var array<string, string>
      */
     protected $searchableColumns = [
+        'business_entity_id' => '=',
         'name' => 'like',
         'code' => 'like',
+        'address' => 'like',
+        'city' => 'like',
+        'state' => 'like',
+        'country' => 'like',
+        'zipcode' => 'like',
     ];
 }
