@@ -40,6 +40,15 @@ class BusinessLocation extends BaseModel
     ];
 
     /**
+     * The attributes that should be appended to the model.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'option_label',
+    ];
+
+    /**
      * The attributes that are searchable in the query.
      *
      * @var array<int, string>
@@ -53,6 +62,23 @@ class BusinessLocation extends BaseModel
         'country',
         'zipcode',
     ];
+
+    /**
+     * The searchables for the query.
+     *
+     * @return array
+     */
+    protected function getCustomSearchables()
+    {
+        return [
+            'business_entity' => function ($query, $value) {
+                $query->whereHas('businessEntity', function ($query) use ($value) {
+                    $query->where('name', 'like', '%' . $value . '%')
+                        ->orWhere('code', 'like', '%' . $value . '%');
+                });
+            },
+        ];
+    }
 
     /**
      * The columns that are searchable in the query.
@@ -69,4 +95,49 @@ class BusinessLocation extends BaseModel
         'country' => 'like',
         'zipcode' => 'like',
     ];
+
+    /**
+     * The columns that are sortable in the query.
+     *
+     * @var array<int, string>
+     */
+    protected $sortableColumns = [
+        'name',
+        'code',
+    ];
+
+    /**
+     * The custom sortables query.
+     *
+     * @return array
+     */
+    protected function getCustomSortables()
+    {
+        return [
+            'business_entity' => function ($query, $direction) {
+                $query->join('business_entities as business_entities_sort', 'business_locations.business_entity_id', '=', 'business_entities_sort.id')
+                    ->orderBy('business_entities_sort.name', $direction);
+            }
+        ];
+    }
+
+    /**
+     * Get the business entity that owns the business location.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function businessEntity()
+    {
+        return $this->belongsTo(BusinessEntity::class, 'business_entity_id');
+    }
+
+    /**
+     * Get the label for the business location.
+     *
+     * @return string
+     */
+    public function getOptionLabelAttribute()
+    {
+        return $this->code . ' - ' . $this->name;
+    }
 }

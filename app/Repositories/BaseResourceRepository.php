@@ -20,9 +20,10 @@ class BaseResourceRepository implements BaseResourceRepositoryInterface
      * Get all resources.
      *
      * @param  array $queryParams
+     * @param  array $relations
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function list(array $queryParams = []): Collection
+    public function list(array $queryParams = [], array $relations = []): Collection
     {
         $search = $queryParams['search'] ?? '';
         $sortBy = $queryParams['sort'] ?? '';
@@ -31,6 +32,9 @@ class BaseResourceRepository implements BaseResourceRepositoryInterface
         $searchableColumns = $queryParams['searchable_columns'] ?? [];
 
         return $this->model
+            ->when(count($relations), function ($query) use ($relations) {
+                $query->with($relations);
+            })
             ->search($search, $searchableColumns)
             ->searchColumns($queryParams)
             ->ofOrder($sortBy, $sortOrder)
@@ -42,9 +46,10 @@ class BaseResourceRepository implements BaseResourceRepositoryInterface
      *
      * @param int $perPage
      * @param array $queryParams
+     * @param array $relations
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginatedList(int $perPage, array $queryParams = []): LengthAwarePaginator
+    public function paginatedList(int $perPage, array $queryParams = [], array $relations = []): LengthAwarePaginator
     {
         $search = $queryParams['search'] ?? '';
         $sortBy = $queryParams['sort'] ?? '';
@@ -53,6 +58,9 @@ class BaseResourceRepository implements BaseResourceRepositoryInterface
         $searchableColumns = $queryParams['searchable_columns'] ?? [];
 
         return $this->model
+            ->when(count($relations), function ($query) use ($relations) {
+                $query->with($relations);
+            })
             ->search($search, $searchableColumns)
             ->searchColumns($queryParams)
             ->ofOrder($sortBy, $sortOrder)
@@ -108,5 +116,18 @@ class BaseResourceRepository implements BaseResourceRepositoryInterface
         $resource = $this->model->findOrFail($id);
 
         return $resource->delete();
+    }
+
+    /**
+     * Batch delete resources by ids.
+     *
+     * @param  array $ids
+     * @return bool
+     */
+    public function batchDeleteByIds(array $ids): bool
+    {
+        return $this->model->fromUserBusiness()
+            ->whereIn('id', $ids)
+            ->delete();
     }
 }

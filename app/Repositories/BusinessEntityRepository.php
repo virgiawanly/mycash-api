@@ -16,17 +16,4 @@ class BusinessEntityRepository extends BaseResourceRepository implements Busines
     {
         $this->model = new BusinessEntity();
     }
-
-    /**
-     * Batch delete resources by ids.
-     *
-     * @param  array $ids
-     * @return bool
-     */
-    public function batchDeleteByIds(array $ids): bool
-    {
-        return $this->model->fromUserBusiness()
-            ->whereIn('id', $ids)
-            ->delete();
-    }
 }

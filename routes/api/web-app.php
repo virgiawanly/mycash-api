@@ -16,6 +16,7 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('business-entities/batch-delete', [BusinessEntityController::class, 'batchDelete']);
     Route::apiResource('business-entities', BusinessEntityController::class);
+    Route::delete('business-locations/batch-delete', [BusinessLocationController::class, 'batchDelete']);
     Route::apiResource('business-locations', BusinessLocationController::class);
 
     Route::apiResource('contact-groups', ContactGroupController::class);

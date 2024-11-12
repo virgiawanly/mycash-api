@@ -20,6 +20,16 @@ class BaseModel extends Model
     protected $searchables = [];
 
     /**
+     * The custom searchables query.
+     *
+     * @return array
+     */
+    protected function getCustomSearchables()
+    {
+        return [];
+    }
+
+    /**
      * The columns that are searchable in the query.
      *
      * @var array<string, string>
@@ -27,11 +37,21 @@ class BaseModel extends Model
     protected $searchableColumns = [];
 
     /**
-     * The columns or expressions that will be sorted if the given parameter exists.
+     * The columns that are sortable in the query.
      *
-     * @var array<string, string>
+     * @var array<int, string>
      */
-    protected $sortColumns = [];
+    protected $sortableColumns = [];
+
+    /**
+     * The custom sortables query.
+     *
+     * @return array
+     */
+    protected function getCustomSortables()
+    {
+        return [];
+    }
 
     /**
      * Scope a query to search for a query.
@@ -64,11 +84,17 @@ class BaseModel extends Model
         }
 
         return $query->where(function ($subQuery) use ($keyword, $searchables) {
-            // escape the search query for % characters
-            $keyword = str_replace('%', '\\%', $keyword);
             foreach ($searchables as $searchable) {
-                $subQuery->orWhere($searchable, 'LIKE', "%{$keyword}%");
+                $subQuery->orWhere($this->getTable() . '.' . $searchable, 'LIKE', "%{$keyword}%");
             }
+
+            $subQuery->orWhere(function ($subQuery) use ($keyword) {
+                foreach ($this->getCustomSearchables() as $callback) {
+                    if (is_callable($callback)) {
+                        $callback($subQuery, $keyword);
+                    }
+                }
+            });
         });
     }
 
@@ -82,17 +108,27 @@ class BaseModel extends Model
      */
     public function scopeOfOrder(Builder $query, string $sort, string $order): Builder
     {
-        if (!$sort) {
+        if (empty($sort)) {
             return $query;
         }
-
-        $sort = $this->sortColumns[$sort] ?? $sort;
 
         if (!$order) {
             $order = 'asc';
         }
 
-        return $query->orderBy(DB::raw($sort), $order);
+        $customSortables = $this->getCustomSortables();
+
+        if (!empty($customSortables[$sort]) && is_callable($customSortables[$sort])) {
+            return tap($query, function ($query) use ($sort, $order, $customSortables) {
+                $customSortables[$sort]($query, $order);
+            });
+        }
+
+        if (in_array($sort, $this->sortableColumns)) {
+            return $query->orderBy($this->getTable() . '.' . $sort, $order);
+        }
+
+        return $query;
     }
 
     /**

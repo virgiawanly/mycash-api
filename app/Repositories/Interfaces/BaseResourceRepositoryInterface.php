@@ -12,18 +12,20 @@ interface BaseResourceRepositoryInterface
      * Get all resources.
      *
      * @param  array $queryParams
+     * @param  array $relations
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function list(array $queryParams = []): Collection;
+    public function list(array $queryParams = [], array $relations = []): Collection;
 
     /**
      * Get all resources with pagination.
      *
-     * @param  int $perPage
-     * @param  array $queryParams
+     * @param int $perPage
+     * @param array $queryParams
+     * @param array $relations
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginatedList(int $perPage, array $queryParams = []): LengthAwarePaginator;
+    public function paginatedList(int $perPage, array $queryParams = [], array $relations = []): LengthAwarePaginator;
 
     /**
      * Get a resource by id.
@@ -58,4 +60,12 @@ interface BaseResourceRepositoryInterface
      * @return bool
      */
     public function delete(int $id): bool;
+
+    /**
+     * Batch delete resources by ids.
+     *
+     * @param  array $ids
+     * @return bool
+     */
+    public function batchDeleteByIds(array $ids): bool;
 }
