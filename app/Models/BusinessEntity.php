@@ -46,4 +46,33 @@ class BusinessEntity extends BaseModel
         'name' => 'like',
         'code' => 'like',
     ];
+
+    /**
+     * The columns that are sortable in the query.
+     *
+     * @var array<int, string>
+     */
+    protected $sortableColumns = [
+        'name',
+        'code',
+    ];
+
+    /**
+     * The attributes that should be appended to the model.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'option_label',
+    ];
+
+    /**
+     * Get the label for the business entity.
+     *
+     * @return string
+     */
+    public function getOptionLabelAttribute()
+    {
+        return $this->code . ' - ' . $this->name;
+    }
 }

@@ -17,4 +17,25 @@ class BusinessEntityService extends BaseResourceService
     {
         $this->repository = $repository;
     }
+
+    /**
+     * Get repository instance.
+     *
+     * @return \App\Repositories\Interfaces\BusinessEntityRepositoryInterface
+     */
+    public function repository(): BusinessEntityRepositoryInterface
+    {
+        return $this->repository;
+    }
+
+    /**
+     * Batch delete resources.
+     *
+     * @param  array $payload
+     * @return void
+     */
+    public function batchDelete(array $payload)
+    {
+        $this->repository()->batchDeleteByIds($payload['ids']);
+    }
 }

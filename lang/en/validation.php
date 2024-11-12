@@ -192,8 +192,10 @@ return [
     'attributes' => [
         'name' => 'name',
         'business_entity' => 'business entity',
+        'business_entities' => 'business entities',
         'contact_group' => 'contact group',
         'pic' => 'pic',
+        'parent_account' => 'parent account',
     ],
 
 ];
