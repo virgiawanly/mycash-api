@@ -17,4 +17,15 @@ class BusinessLocationService extends BaseResourceService
     {
         $this->repository = $repository;
     }
+
+    /**
+     * Batch delete resources.
+     *
+     * @param  array $payload
+     * @return void
+     */
+    public function batchDelete(array $payload)
+    {
+        $this->repository()->batchDeleteByIds($payload['ids']);
+    }
 }

@@ -46,23 +46,27 @@ class BaseResourceService
     /**
      * Get all resources.
      *
+     * @param  array $queryParams
+     * @param  array $relations
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function list(array $queryParams): Collection
+    public function list(array $queryParams, array $relations = []): Collection
     {
-        return $this->repository->list($queryParams);
+        return $this->repository->list($queryParams, $relations);
     }
 
     /**
      * Get paginated resources.
      *
+     * @param  array $queryParams
+     * @param  array $relations
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginatedList(array $queryParams): LengthAwarePaginator
+    public function paginatedList(array $queryParams, array $relations = []): LengthAwarePaginator
     {
         $size = $queryParams['size'] ?? $this->defaultPageSize;
 
-        return $this->repository->paginatedList($size, $queryParams);
+        return $this->repository->paginatedList($size, $queryParams, $relations);
     }
 
     /**
